@@ -107,16 +107,13 @@ new g_iLargestAnimatorId = -1;
 #define EASE_IN_OUT_BOUNCE __addressof(easeInOutBounce)
 #define EASE_NONE __addressof(easeNone)
 
-enum eAnimatorTypes 
-{
-	ANIMATOR_POSITION,
-	ANIMATOR_LETTER_SIZE,
-	ANIMATOR_TEXT_SIZE,
-	ANIMATOR_FULL_SIZE,
-	ANIMATOR_COLOR,
-	ANIMATOR_BOX_COLOR,
-	ANIMATOR_BACKGROUND_COLOR
-}
+#define ANIMATOR_POSITION 0
+#define ANIMATOR_LETTER_SIZE 1
+#define ANIMATOR_TEXT_SIZE 2
+#define ANIMATOR_FULL_SIZE 3
+#define ANIMATOR_COLOR 4
+#define ANIMATOR_BOX_COLOR 5
+#define ANIMATOR_BACKGROUND_COLOR 6
 
 enum _:eAnimatorData
 {
@@ -133,8 +130,7 @@ enum _:eAnimatorData
 	e_iType,
 	e_iColor,
 	e_iTargetColor
-}
-
+};
 new g_rgeAnimators[MAX_ANIMATORS + 1][eAnimatorData];
 
 forward Animator_OnFinish(playerid, animator, type);
