@@ -8,7 +8,7 @@ A library that implements easing functions into the Pawn language, and an animat
 2. Place the file in your `include` folder.
 3. Enter this line in your initial script.
 ```pawn
-#include <(textdraw-streamer)[https://github.com/nexquery/samp-textdraw-streamer]> // if you use this, remember to put it before pawn-easing-functions
+#include <[textdraw-streamer](https://github.com/nexquery/samp-textdraw-streamer)> // if you use this, remember to put it before pawn-easing-functions
 #include <pawn-easing-functions>
 ```
 4. Install [YSF](https://github.com/IS4Code/YSF/releases) if you are not using [open.mp](https://github.com/openmultiplayer/open.mp).
