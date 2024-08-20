@@ -4,13 +4,14 @@ A library that implements easing functions into the Pawn language, and an animat
 
 ## Implementation
 
-1. Download the [latest version](https://github.com/alexchwoj/pawn-easing-functions/releases/latest).
+1. Download the latest version.
 2. Place the file in your `include` folder.
 3. Enter this line in your initial script.
 ```pawn
+#include <(textdraw-streamer)[https://github.com/nexquery/samp-textdraw-streamer]> // if you use this, remember to put it before pawn-easing-functions
 #include <pawn-easing-functions>
 ```
-4. Install [YSF](https://github.com/IS4Code/YSF/releases).
+4. Install [YSF](https://github.com/IS4Code/YSF/releases) if you are not using [open.mp](https://github.com/openmultiplayer/open.mp).
 
 ## Functions
 ```pawn

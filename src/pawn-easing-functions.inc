@@ -1,9 +1,9 @@
 /*
-
-	pawn-easing-functions by alexchwoj
+	pawn-easing-functions
+	Version: v1.1.2b
 	
-	Github: https://github.com/alexchwoj
-
+	v1.1.2 by alexchwoj: https://github.com/alexchwoj/pawn-easing-functions
+	v1.1.2b by Giapp: https://github.com/vdgiapp/pawn-easing-functions
 */
 
 #if defined _pawn_easing_functions_included
@@ -18,36 +18,53 @@
 #define MAX_ANIMATORS 1024
 #define ANIMATION_UPDATE_RATE (1000 / EASING_ANIMATION_FRAMERATE)
 
-#include <a_samp>
-
-#if !defined _YSF_included
-	#include <YSF>
-#endif
+#tryinclude <a_samp>
+#tryinclude <open.mp>
 
 #if defined _INC_open_mp
-	#if !defined PlayerTextDrawGetBackgroundCol
-		#define PlayerTextDrawGetBackgroundCol PlayerTextDrawGetBackgroundColour
+
+	#if defined _INC_textdraw_streamer
+		// use textdraw-streamer
+		#define PEF_PlayerTDGetBGColour DynPlayerTextDrawGetBGColour
+		#define PEF_PlayerTDGetColour DynamicPlayerTextDrawGetColour
+		#define	PEF_PlayerTDGetBoxColour DynamicPlayerTextDrawGetBoxCol
+		#define PEF_PlayerTextDrawSetPos DynamicPlayerTextDrawSetPos
+		#define PEF_PlayerTextDrawGetPos DynamicPlayerTextDrawGetPos
+		#define PEF_PlayerTDGetTextSize DynPlayerTextDrawGetTextSize
+		#define PEF_PlayerTDGetLetterSize DynPlayerTextDrawGetLetterSize
+	#else
+		// only open.mp
+		#define PEF_PlayerTDGetBGColour PlayerTextDrawGetBackgroundColour
+		#define PEF_PlayerTDGetColour PlayerTextDrawGetColour
+		#define	PEF_PlayerTDGetBoxColour PlayerTextDrawGetBoxColour
+		#define PEF_PlayerTextDrawSetPos PlayerTextDrawSetPos
+		#define PEF_PlayerTextDrawGetPos PlayerTextDrawGetPos
+		#define PEF_PlayerTDGetTextSize PlayerTextDrawGetTextSize
+		#define PEF_PlayerTDGetLetterSize PlayerTextDrawGetLetterSize
 	#endif
+
+	// open.mp
+	#define PEF_PlayerTextDrawColour PlayerTextDrawColour
+	#define PEF_PlayerTextDrawBoxColour PlayerTextDrawBoxColour
+	#define PEF_PlayerTextDrawBGColour PlayerTextDrawBackgroundColour
 #else
-	#if !defined PlayerTextDrawColour
-		#define PlayerTextDrawColour PlayerTextDrawColor
+	#if !defined _YSF_included
+		#include <YSF>
 	#endif
+	
+	// YSF
+	#define PEF_PlayerTDGetBGColour PlayerTextDrawGetBackgroundColor
+	#define PEF_PlayerTDGetColour PlayerTextDrawGetColor
+	#define	PEF_PlayerTDGetBoxColour PlayerTextDrawGetBoxColor
+	#define PEF_PlayerTextDrawSetPos PlayerTextDrawSetPos
+	#define PEF_PlayerTextDrawGetPos PlayerTextDrawGetPos
+	#define PEF_PlayerTDGetTextSize PlayerTextDrawGetTextSize
+	#define PEF_PlayerTDGetLetterSize PlayerTextDrawGetLetterSize
 
-	#if !defined PlayerTextDrawBoxColour
-		#define PlayerTextDrawBoxColour PlayerTextDrawBoxColor
-	#endif
-
-	#if !defined PlayerTextDrawBackgroundColour
-		#define PlayerTextDrawBackgroundColour PlayerTextDrawBackgroundColor
-	#endif
-
-	#if !defined PlayerTextDrawGetColour
-		#define PlayerTextDrawGetColour PlayerTextDrawGetColor
-	#endif
-
-	#if !defined PlayerTextDrawGetBoxColour
-		#define PlayerTextDrawGetBoxColour PlayerTextDrawGetBoxColor
-	#endif
+	// samp
+	#define PEF_PlayerTextDrawColour PlayerTextDrawColor
+	#define PEF_PlayerTextDrawBoxColour PlayerTextDrawBoxColor
+	#define PEF_PlayerTextDrawBGColour PlayerTextDrawBackgroundColor
 #endif
 
 #define PlayerText_InterpolateColour PlayerText_InterpolateColor
@@ -447,7 +464,7 @@ public Animator_Process()
 
 			switch(g_rgeAnimators[i][e_iType])
 			{
-				case ANIMATOR_POSITION: PlayerTextDrawSetPos(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], x, y);
+				case ANIMATOR_POSITION: PEF_PlayerTextDrawSetPos(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], x, y);
 				case ANIMATOR_LETTER_SIZE: PlayerTextDrawLetterSize(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], x, y);
 				case ANIMATOR_TEXT_SIZE: PlayerTextDrawTextSize(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], x, y);
 				case ANIMATOR_FULL_SIZE:
@@ -455,9 +472,9 @@ public Animator_Process()
 					PlayerTextDrawLetterSize(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], x, y);
 					PlayerTextDrawTextSize(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], x, y);
 				}
-				case ANIMATOR_COLOR: PlayerTextDrawColour(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], lerp_rgba(g_rgeAnimators[i][e_iColor], g_rgeAnimators[i][e_iTargetColor], ease));
-				case ANIMATOR_BOX_COLOR: PlayerTextDrawBoxColour(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], lerp_rgba(g_rgeAnimators[i][e_iColor], g_rgeAnimators[i][e_iTargetColor], ease));
-				case ANIMATOR_BACKGROUND_COLOR: PlayerTextDrawBackgroundColour(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], lerp_rgba(g_rgeAnimators[i][e_iColor], g_rgeAnimators[i][e_iTargetColor], ease));
+				case ANIMATOR_COLOR: PEF_PlayerTextDrawColour(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], lerp_rgba(g_rgeAnimators[i][e_iColor], g_rgeAnimators[i][e_iTargetColor], ease));
+				case ANIMATOR_BOX_COLOR: PEF_PlayerTextDrawBoxColour(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], lerp_rgba(g_rgeAnimators[i][e_iColor], g_rgeAnimators[i][e_iTargetColor], ease));
+				case ANIMATOR_BACKGROUND_COLOR: PEF_PlayerTextDrawBGColour(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw], lerp_rgba(g_rgeAnimators[i][e_iColor], g_rgeAnimators[i][e_iTargetColor], ease));
 			}
 
 			PlayerTextDrawShow(g_rgeAnimators[i][e_iPlayerid], g_rgeAnimators[i][e_tdTextdraw]);
@@ -507,9 +524,9 @@ stock Animator_Insert(playerid, PlayerText:textdraw, Float:start_x, Float:start_
 stock PlayerText_PlaceOnTop(playerid, PlayerText:textdraw)
 {
 	new Float:x, Float:y;
-	PlayerTextDrawGetPos(playerid, textdraw, x, y);
+	PEF_PlayerTextDrawGetPos(playerid, textdraw, x, y);
 
-	PlayerTextDrawSetPos(playerid, textdraw, x, y);
+	PEF_PlayerTextDrawSetPos(playerid, textdraw, x, y);
 	PlayerTextDrawShow(playerid, textdraw);
 	return 1;
 }
@@ -517,43 +534,43 @@ stock PlayerText_PlaceOnTop(playerid, PlayerText:textdraw)
 stock PlayerText_MoveTo(playerid, PlayerText:textdraw, Float:x, Float:y, duration = 1000, ease)
 {
 	new Float:start_x, Float:start_y;
-	PlayerTextDrawGetPos(playerid, textdraw, start_x, start_y);
+	PEF_PlayerTextDrawGetPos(playerid, textdraw, start_x, start_y);
 	return Animator_Insert(playerid, textdraw, start_x, start_y, x, y, duration, ease, ANIMATOR_POSITION);
 }
 
 stock PlayerText_MoveToX(playerid, PlayerText:textdraw, Float:x, duration = 1000, ease)
 {
 	new Float:start_x, Float:start_y;
-	PlayerTextDrawGetPos(playerid, textdraw, start_x, start_y);
+	PEF_PlayerTextDrawGetPos(playerid, textdraw, start_x, start_y);
 	return Animator_Insert(playerid, textdraw, start_x, start_y, x, start_y, duration, ease, ANIMATOR_POSITION);
 }
 
 stock PlayerText_MoveToY(playerid, PlayerText:textdraw, Float:y, duration = 1000, ease)
 {
 	new Float:start_x, Float:start_y;
-	PlayerTextDrawGetPos(playerid, textdraw, start_x, start_y);
+	PEF_PlayerTextDrawGetPos(playerid, textdraw, start_x, start_y);
 	return Animator_Insert(playerid, textdraw, start_x, start_y, start_x, y, duration, ease, ANIMATOR_POSITION);
 }
 
 stock PlayerText_MoveLetterSize(playerid, PlayerText:textdraw, Float:y, duration = 1000, ease)
 {
 	new Float:start_x, Float:start_y;
-	PlayerTextDrawGetLetterSize(playerid, textdraw, start_x, start_y);
+	PEF_PlayerTDGetLetterSize(playerid, textdraw, start_x, start_y);
 	return Animator_Insert(playerid, textdraw, start_x, start_y, start_x, y, duration, ease, ANIMATOR_LETTER_SIZE);
 }
 
 stock PlayerText_MoveTextSize(playerid, PlayerText:textdraw, Float:x, duration = 1000, ease)
 {
 	new Float:start_x, Float:start_y;
-	PlayerTextDrawGetTextSize(playerid, textdraw, start_x, start_y);
+	PEF_PlayerTDGetTextSize(playerid, textdraw, start_x, start_y);
 	return Animator_Insert(playerid, textdraw, start_x, start_y, x, start_y, duration, ease, ANIMATOR_TEXT_SIZE);
 }
 
 stock PlayerText_MoveSize(playerid, PlayerText:textdraw, Float:x, Float:y, duration = 1000, ease)
 {
 	new Float:start_x, Float:start_y, Float:temp_axis;
-	PlayerTextDrawGetTextSize(playerid, textdraw, start_x, temp_axis);
-	PlayerTextDrawGetLetterSize(playerid, textdraw, temp_axis, start_y);
+	PEF_PlayerTDGetTextSize(playerid, textdraw, start_x, temp_axis);
+	PEF_PlayerTDGetLetterSize(playerid, textdraw, temp_axis, start_y);
 	#pragma unused temp_axis
 
 	return Animator_Insert(playerid, textdraw, start_x, start_y, x, y, duration, ease, ANIMATOR_FULL_SIZE);
@@ -571,17 +588,17 @@ stock PlayerText_InterpolateTextSize(playerid, PlayerText:textdraw, Float:start_
 
 stock PlayerText_InterpolateColor(playerid, PlayerText:textdraw, color, duration = 1000, ease)
 {
-	return Animator_Insert(playerid, textdraw, 0.0, 0.0, 0.0, 0.0, duration, ease, ANIMATOR_COLOR, PlayerTextDrawGetColour(playerid, textdraw), color);
+	return Animator_Insert(playerid, textdraw, 0.0, 0.0, 0.0, 0.0, duration, ease, ANIMATOR_COLOR, PEF_PlayerTDGetColour(playerid, textdraw), color);
 }
 
 stock PlayerText_InterpolateBoxColor(playerid, PlayerText:textdraw, color, duration = 1000, ease)
 {
-	return Animator_Insert(playerid, textdraw, 0.0, 0.0, 0.0, 0.0, duration, ease, ANIMATOR_BOX_COLOR, PlayerTextDrawGetBoxColour(playerid, textdraw), color);
+	return Animator_Insert(playerid, textdraw, 0.0, 0.0, 0.0, 0.0, duration, ease, ANIMATOR_BOX_COLOR, PEF_PlayerTDGetBoxColour(playerid, textdraw), color);
 }
 
 stock PlayerText_InterpolateBGColor(playerid, PlayerText:textdraw, color, duration = 1000, ease)
 {
-	return Animator_Insert(playerid, textdraw, 0.0, 0.0, 0.0, 0.0, duration, ease, ANIMATOR_BACKGROUND_COLOR, PlayerTextDrawGetBackgroundCol(playerid, textdraw), color);
+	return Animator_Insert(playerid, textdraw, 0.0, 0.0, 0.0, 0.0, duration, ease, ANIMATOR_BACKGROUND_COLOR, PEF_PlayerTDGetBGColour(playerid, textdraw), color);
 }
 
 stock PlayerText_StopMove(animator_id)
